@@ -1,86 +1,54 @@
-<!-- Nel file: index.html -->
-
 <!DOCTYPE html>
 <html lang="it">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registra Allenamento</title>
-    <!-- Questo script è fondamentale per comunicare con Telegram -->
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            padding: 15px;
-            background-color: var(--tg-theme-bg-color, #ffffff); /* Usa i colori del tema di Telegram */
-            color: var(--tg-theme-text-color, #000000);
-        }
-        .form-group { margin-bottom: 1rem; }
-        label { display: block; margin-bottom: 5px; }
-        input {
-            width: 100%;
-            padding: 10px;
-            box-sizing: border-box;
-            border-radius: 8px;
-            border: 1px solid var(--tg-theme-hint-color, #dddddd);
-        }
-        #submitBtn {
-            width: 100%;
-            padding: 15px;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            /* Questo pulsante usa i colori principali di Telegram */
-            color: var(--tg-theme-button-text-color, #ffffff);
-            background-color: var(--tg-theme-button-color, #007bff);
-        }
-    </style>
+    <title>Gym Workout Tracker</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Registra Allenamento</h1>
+    <div class="container">
+        <!-- VISTA CALENDARIO (HOME) -->
+        <div id="calendar-container">
+            <h1>Gym Tracker</h1>
+            <div class="calendar-header">
+                <button id="prev-month">◄</button>
+                <h3 id="month-year"></h3>
+                <button id="next-month">►</button>
+            </div>
+            <div id="calendar"></div>
+            <button id="view-progress-btn" class="main-action-btn">Visualizza Progressione</button>
+        </div>
 
-    <div class="form-group">
-        <label for="esercizio">Esercizio:</label>
-        <input type="text" id="esercizio" placeholder="Es. Panca Piana">
+        <!-- VISTA ALLENAMENTO -->
+        <div id="workout-section" class="hidden">
+            <div class="view-header">
+                <button id="close-workout-btn" class="back-btn">◄ Calendario</button>
+                <h2 id="workout-date"></h2>
+            </div>
+            <select id="workout-type-select">
+                <option value="">Seleziona Allenamento</option>
+                <option value="push">Push</option>
+                <option value="pull">Pull</option>
+                <option value="legs">Legs</option>
+            </select>
+            <div id="exercise-list"></div>
+            <button id="save-workout">Salva e Chiudi</button>
+        </div>
+
+        <!-- VISTA PROGRESSIONE -->
+        <div id="progress-section" class="hidden">
+            <div class="view-header">
+                <button id="close-progress-btn" class="back-btn">◄ Calendario</button>
+                <h2>Progressione Esercizi</h2>
+            </div>
+            <select id="exercise-progress-select"></select>
+            <div class="chart-container">
+                <canvas id="progress-chart"></canvas>
+            </div>
+        </div>
     </div>
-    <div class="form-group">
-        <label for="peso">Peso (kg):</label>
-        <input type="number" id="peso" inputmode="decimal" placeholder="Es. 80">
-    </div>
-    <div class="form-group">
-        <label for="ripetizioni">Ripetizioni:</label>
-        <input type="number" id="ripetizioni" inputmode="numeric" placeholder="Es. 10">
-    </div>
 
-    <button id="submitBtn">Invia Dati al Bot</button>
-
-    <script>
-        // Inizializza l'oggetto Web App di Telegram
-        const tg = window.Telegram.WebApp;
-
-        const submitBtn = document.getElementById('submitBtn');
-
-        submitBtn.addEventListener('click', () => {
-            const data = {
-                esercizio: document.getElementById('esercizio').value,
-                peso: document.getElementById('peso').value,
-                ripetizioni: document.getElementById('ripetizioni').value,
-            };
-
-            // Controlla che i campi non siano vuoti
-            if (!data.esercizio || !data.peso || !data.ripetizioni) {
-                tg.showAlert('Per favore, compila tutti i campi!');
-                return;
-            }
-
-            // Invia i dati al bot in formato JSON
-            tg.sendData(JSON.stringify(data));
-
-            // Dopo aver inviato i dati, puoi chiudere la web app
-            // tg.close();
-        });
-    </script>
-</body>
-</html>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js"></script>
+</body></html>
