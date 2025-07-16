@@ -83,3 +83,21 @@ button#save-workout:hover, .main-action-btn:hover { background-color: #4394d1; }
 
 /* --- GRAFICO --- */
 .chart-container { position: relative; height: 60vh; background-color: var(--primary-card-bg); padding: 10px; border-radius: 12px; }
+/* Stile per il link del video */
+.video-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 10px;
+    color: var(--hint-color);
+    text-decoration: none;
+}
+
+.video-link:hover {
+    color: var(--accent-color);
+}
+
+.video-link svg {
+    width: 20px;
+    height: 20px;
+}
