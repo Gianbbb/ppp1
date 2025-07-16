@@ -1,0 +1,85 @@
+/* --- IMPOSTAZIONI GLOBALI E TEMA SCURO --- */
+:root {
+    --bg-color: #18222d;
+    --primary-card-bg: #212e3a;
+    --secondary-card-bg: #2b3a4a;
+    --text-color: #ffffff;
+    --hint-color: #aabac7;
+    --border-color: #334354;
+    --accent-color: #52a5e2;
+    --color-push: #ff8a80; --color-pull: #80d8ff; --color-legs: #b9f6ca; --color-full: #ffd180;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.5;
+}
+
+.container { padding: 15px; max-width: 800px; margin: 0 auto; }
+.hidden { display: none !important; }
+
+/* --- HEADER DELLE VISTE --- */
+.view-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    position: relative;
+    justify-content: center;
+}
+.view-header h2 {
+    margin: 0;
+    padding: 0;
+    border: none;
+    font-size: 1.2rem;
+}
+.back-btn {
+    position: absolute;
+    left: 0;
+    background: none;
+    border: none;
+    color: var(--accent-color);
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+/* --- VISTA CALENDARIO --- */
+#calendar-container h1 { font-size: 1.8rem; text-align: center; margin-bottom: 25px; }
+.calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.calendar-header button { background: none; border: none; color: var(--accent-color); font-size: 1.5rem; cursor: pointer; }
+#month-year { font-weight: 500; font-size: 1.2rem; }
+#calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
+#calendar .weekday { font-weight: 600; color: var(--hint-color); font-size: 0.8rem; text-align: center; }
+.day { display: flex; justify-content: center; align-items: center; aspect-ratio: 1/1; border-radius: 8px; cursor: pointer; transition: background-color 0.2s ease; position: relative; }
+.day:hover { background-color: var(--secondary-card-bg); }
+.day::after { content: ''; position: absolute; bottom: 6px; width: 6px; height: 6px; border-radius: 50%; display: none; }
+.day.push::after { display: block; background-color: var(--color-push); }
+.day.pull::after { display: block; background-color: var(--color-pull); }
+.day.legs::after { display: block; background-color: var(--color-legs); }
+.day.full::after { display: block; background-color: var(--color-full); }
+
+/* --- VISTA ALLENAMENTO --- */
+#workout-section, #progress-section { background: var(--bg-color); }
+select, input, textarea { width: 100%; padding: 12px; background-color: var(--primary-card-bg); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-color); font-size: 1rem; margin-bottom: 15px; }
+.exercise { background-color: var(--primary-card-bg); border-radius: 10px; padding: 15px; margin-bottom: 15px; }
+.exercise-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+.exercise-header span { font-weight: 600; font-size: 1.1rem; }
+.progress-btn { background-color: #3f51b5; color: white; border: none; border-radius: 20px; padding: 5px 12px; font-size: 0.8rem; font-weight: 500; cursor: pointer; }
+.set { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; padding: 10px; border: 1px solid transparent; border-radius: 8px; transition: border-color 0.3s; }
+.set.focused { border-color: var(--accent-color); } /* Stile per il focus */
+.set > span { width: 100%; color: var(--hint-color); font-size: 0.9rem; }
+.set input { margin-bottom: 0; flex-grow: 1; }
+.set .last-time { width: 100%; font-size: 0.8rem; color: var(--hint-color); text-align: right; margin-top: 5px; }
+.timer-buttons { display: flex; gap: 10px; align-items: center; margin-top: 10px; }
+.timer-buttons button { background-color: var(--border-color); border: none; color: var(--text-color); border-radius: 8px; padding: 8px 12px; cursor: pointer; }
+textarea.notes { height: 60px; margin-top: 15px; }
+
+/* --- PULSANTI PRINCIPALI --- */
+button#save-workout, .main-action-btn { width: 100%; padding: 15px; font-size: 1.1rem; font-weight: 600; background-color: var(--accent-color); color: white; border: none; border-radius: 10px; cursor: pointer; transition: background-color 0.2s ease; margin-top: 20px; }
+button#save-workout:hover, .main-action-btn:hover { background-color: #4394d1; }
+
+/* --- GRAFICO --- */
+.chart-container { position: relative; height: 60vh; background-color: var(--primary-card-bg); padding: 10px; border-radius: 12px; }
