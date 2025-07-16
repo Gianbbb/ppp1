@@ -1,52 +1,59 @@
 document.addEventListener('DOMContentLoaded', () => {
     // ---------- ELEMENTI DEL DOM ----------
     const allViews = ['calendar-container', 'workout-section', 'progress-section'];
-    const calendarContainer = document.getElementById('calendar-container');
-    const workoutSection = document.getElementById('workout-section');
-    const progressSection = document.getElementById('progress-section');
-
-    const monthYearElement = document.getElementById('month-year');
-    const calendarElement = document.getElementById('calendar');
     const workoutDateElement = document.getElementById('workout-date');
     const workoutTypeSelect = document.getElementById('workout-type-select');
     const exerciseList = document.getElementById('exercise-list');
     const progressSelect = document.getElementById('exercise-progress-select');
     const progressChartCanvas = document.getElementById('progress-chart').getContext('2d');
-
-    // Pulsanti di navigazione
-    const prevMonthButton = document.getElementById('prev-month');
-    const nextMonthButton = document.getElementById('next-month');
-    const viewProgressBtn = document.getElementById('view-progress-btn');
-    const closeWorkoutBtn = document.getElementById('close-workout-btn');
-    const closeProgressBtn = document.getElementById('close-progress-btn');
-    const saveWorkoutButton = document.getElementById('save-workout');
-
+    
     let currentDate = new Date();
     let selectedDate = null;
     let chart = null;
 
     // ---------- GESTIONE VISTE ----------
     const showView = (viewId) => {
-        allViews.forEach(id => {
-            document.getElementById(id).classList.add('hidden');
-        });
+        allViews.forEach(id => document.getElementById(id).classList.add('hidden'));
         document.getElementById(viewId).classList.remove('hidden');
     };
 
-    // ---------- DEFINIZIONE SCHEDE E GESTIONE DATI ----------
-    const workoutPlans = {
-        push: [{ name: 'Panca piana', sets: 4, reps: '8-12' }, { name: 'Shoulder machine', sets: 3, reps: '8-12' }, { name: 'Chest press vertical', sets: 3, reps: '8-12' }, { name: 'Lateral raise machine', sets: 4, reps: '12-15' }, { name: 'Peck deck', sets: 3, reps: '12-15' }, { name: 'Triceps extension', sets: 3, reps: '8-12' }, { name: 'Triceps pushdown', sets: 3, reps: '12-15' }, { name: 'Crunch machine', sets: 4, reps: '10-12' }],
-        pull: [{ name: 'Trazioni', sets: 4, reps: '6-10' }, { name: 'Lat machine', sets: 3, reps: '8-12' }],
-        legs: [{ name: 'Squat', sets: 4, reps: '6-10' }, { name: 'Leg press', sets: 3, reps: '8-12' }]
-    };
+    // ---------- GESTIONE DATI E DATI DI ESEMPIO ----------
     const getSavedData = () => JSON.parse(localStorage.getItem('gymTrackerData')) || {};
     const saveData = (data) => localStorage.setItem('gymTrackerData', JSON.stringify(data));
+
+    const generateDummyData = () => {
+        // Questa funzione viene eseguita solo una volta
+        if (localStorage.getItem('dummyDataGenerated')) return;
+
+        console.log("Generazione dati di esempio per la prima volta...");
+        const allData = {};
+        const dummyDate = new Date();
+        dummyDate.setDate(dummyDate.getDate() - 3); // 3 giorni fa
+        const dateStr = `${dummyDate.getFullYear()}-${String(dummyDate.getMonth() + 1).padStart(2, '0')}-${String(dummyDate.getDate()).padStart(2, '0')}`;
+        
+        const dummyExercises = workoutPlans.push.map(exercise => {
+            const series = [];
+            for (let i = 0; i < exercise.sets; i++) {
+                series.push({
+                    weight: Math.floor(Math.random() * 20 + 30), // Peso casuale tra 30 e 50
+                    reps: Math.floor(Math.random() * 4 + 8),   // Reps casuali tra 8 e 12
+                    rir: Math.floor(Math.random() * 2 + 1)      // RIR casuale tra 1 e 3
+                });
+            }
+            return { name: exercise.name, series, notes: "Allenamento di prova." };
+        });
+
+        allData[dateStr] = { type: 'push', exercises: dummyExercises };
+        saveData(allData);
+        localStorage.setItem('dummyDataGenerated', 'true');
+    };
 
     // ---------- LOGICA CALENDARIO ----------
     const renderCalendar = () => {
         const month = currentDate.getMonth();
         const year = currentDate.getFullYear();
-        monthYearElement.textContent = `${currentDate.toLocaleString('it-IT', { month: 'long' })} ${year}`;
+        document.getElementById('month-year').textContent = `${currentDate.toLocaleString('it-IT', { month: 'long' })} ${year}`;
+        const calendarElement = document.getElementById('calendar');
         calendarElement.innerHTML = '';
         const weekDays = ['Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab', 'Dom'];
         weekDays.forEach(day => {
@@ -71,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // ---------- LOGICA ALLENAMENTO ----------
+    // ---------- LOGICA ALLENAMENTO CON VIDEO ----------
     const openWorkoutForDate = (dateStr) => {
         selectedDate = dateStr;
         const formattedDate = new Date(dateStr + 'T00:00:00').toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'long' });
@@ -87,6 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const loadExercises = (type, savedExercises = []) => {
+        // workoutPlans è ora definito in workout_plans.js
         const plan = workoutPlans[type];
         exerciseList.innerHTML = '';
         if (!plan) return;
@@ -96,8 +104,19 @@ document.addEventListener('DOMContentLoaded', () => {
             const lastWorkoutData = findLastExerciseData(allData, exercise.name);
             const exerciseDiv = document.createElement('div');
             exerciseDiv.className = 'exercise';
+            
+            // Aggiunta del link al video
+            const videoLink = exercise.videoId
+                ? `<a href="https://www.youtube.com/watch?v=${exercise.videoId}" target="_blank" class="video-link" title="Guarda il video dell'esercizio">
+                      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>
+                   </a>`
+                : '';
+
             exerciseDiv.innerHTML = `
-                <div class="exercise-header"><span>${exercise.name} (${exercise.sets}x${exercise.reps})</span></div>
+                <div class="exercise-header">
+                    <span>${exercise.name} (${exercise.sets}x${exercise.reps})</span>
+                    ${videoLink}
+                </div>
                 <div class="sets-container"></div>
                 <textarea class="notes" placeholder="Note veloci...">${exerciseData.notes || ''}</textarea>`;
             const setsContainer = exerciseDiv.querySelector('.sets-container');
@@ -132,10 +151,12 @@ document.addEventListener('DOMContentLoaded', () => {
         return {};
     };
 
+    // ... (Il resto dello script da "LOGICA SALVATAGGIO" in poi rimane identico al precedente)
+    // ... (Assicurati di copiare anche le sezioni LOGICA SALVATAGGIO, LOGICA GRAFICI, TIMER, EVENT LISTENER e INIZIALIZZAZIONE dalla risposta precedente)
+    
     // ---------- LOGICA SALVATAGGIO ----------
-    saveWorkoutButton.addEventListener('click', () => {
-        const type = workoutTypeSelect.value;
-        if (!type || !selectedDate) return;
+    document.getElementById('save-workout').addEventListener('click', () => {
+        const type = workoutTypeSelect.value; if (!type || !selectedDate) return;
         const exercises = [];
         document.querySelectorAll('#workout-section .exercise').forEach(exerciseDiv => {
             const name = exerciseDiv.querySelector('.exercise-header span').textContent.split(' (')[0];
@@ -149,12 +170,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const notes = exerciseDiv.querySelector('.notes').value;
             exercises.push({ name, series, notes });
         });
-        const allData = getSavedData();
-        allData[selectedDate] = { type, exercises };
-        saveData(allData);
-        renderCalendar();
-        updateProgressSection();
-        showView('calendar-container');
+        const allData = getSavedData(); allData[selectedDate] = { type, exercises };
+        saveData(allData); renderCalendar(); updateProgressSection(); showView('calendar-container');
     });
 
     // ---------- LOGICA GRAFICI ----------
@@ -163,27 +180,19 @@ document.addEventListener('DOMContentLoaded', () => {
         const exerciseNames = [...new Set(Object.values(allData).flatMap(w => w.exercises.map(e => e.name)))];
         progressSelect.innerHTML = '<option value="">Seleziona Esercizio</option>';
         exerciseNames.forEach(name => {
-            const option = document.createElement('option');
-            option.value = name; option.textContent = name;
-            progressSelect.appendChild(option);
+            const option = document.createElement('option'); option.value = name; option.textContent = name; progressSelect.appendChild(option);
         });
     };
-
     progressSelect.addEventListener('change', () => {
-        const exerciseName = progressSelect.value;
-        if (chart) chart.destroy();
-        if (!exerciseName) return;
-        const allData = getSavedData();
-        const labels = [], maxWeightData = [], totalVolumeData = [];
+        const exerciseName = progressSelect.value; if (chart) chart.destroy(); if (!exerciseName) return;
+        const allData = getSavedData(); const labels = [], maxWeightData = [], totalVolumeData = [];
         Object.keys(allData).sort((a,b) => new Date(a) - new Date(b)).forEach(date => {
-            const workout = allData[date];
-            const exercise = workout.exercises.find(e => e.name === exerciseName);
+            const workout = allData[date]; const exercise = workout.exercises.find(e => e.name === exerciseName);
             if (exercise && exercise.series.length > 0) {
                 labels.push(new Date(date + 'T00:00:00').toLocaleDateString('it-IT', {day: '2-digit', month: 'short'}));
                 let maxWeight = 0, volume = 0;
                 exercise.series.forEach(set => {
-                    if (set.weight > maxWeight) maxWeight = set.weight;
-                    volume += set.weight * set.reps;
+                    if (set.weight > maxWeight) maxWeight = set.weight; volume += set.weight * set.reps;
                 });
                 maxWeightData.push(maxWeight); totalVolumeData.push(volume);
             }
@@ -197,52 +206,39 @@ document.addEventListener('DOMContentLoaded', () => {
     // ---------- TIMER CON AUTO-AVANZAMENTO ----------
     let restTimerInterval;
     const startTimer = (duration, element) => {
-        clearInterval(restTimerInterval);
-        const currentSetDiv = element.closest('.set');
-        
-        let timer = duration;
-        element.disabled = true;
+        clearInterval(restTimerInterval); const currentSetDiv = element.closest('.set');
+        let timer = duration; element.disabled = true;
         restTimerInterval = setInterval(() => {
             element.textContent = `${String(Math.floor(timer / 60)).padStart(2, '0')}:${String(timer % 60).padStart(2, '0')}`;
             if (--timer < 0) {
-                clearInterval(restTimerInterval);
-                element.disabled = false;
-                element.textContent = `${duration}s`;
-                if (navigator.vibrate) navigator.vibrate(200);
-
-                // Auto-avanzamento
+                clearInterval(restTimerInterval); element.disabled = false; element.textContent = `${duration}s`; if (navigator.vibrate) navigator.vibrate(200);
                 const nextSetDiv = currentSetDiv.nextElementSibling;
                 if (nextSetDiv && nextSetDiv.classList.contains('set')) {
-                    document.querySelectorAll('.set.focused').forEach(el => el.classList.remove('focused'));
-                    nextSetDiv.classList.add('focused');
-                    const nextWeightInput = nextSetDiv.querySelector('.weight');
-                    nextWeightInput.focus();
-                    nextWeightInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    document.querySelectorAll('.set.focused').forEach(el => el.classList.remove('focused')); nextSetDiv.classList.add('focused');
+                    const nextWeightInput = nextSetDiv.querySelector('.weight'); nextWeightInput.focus(); nextWeightInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
             }
         }, 1000);
     };
 
     // ---------- EVENT LISTENER GLOBALI ----------
-    prevMonthButton.addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth() - 1); renderCalendar(); });
-    nextMonthButton.addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth() + 1); renderCalendar(); });
+    document.getElementById('prev-month').addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth() - 1); renderCalendar(); });
+    document.getElementById('next-month').addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth() + 1); renderCalendar(); });
     workoutTypeSelect.addEventListener('change', () => loadExercises(workoutTypeSelect.value));
-    
-    // Listeners per navigazione tra viste
-    viewProgressBtn.addEventListener('click', () => showView('progress-section'));
-    closeWorkoutBtn.addEventListener('click', () => showView('calendar-container'));
-    closeProgressBtn.addEventListener('click', () => showView('calendar-container'));
-
-    // Delega degli eventi per i bottoni del timer
+    document.getElementById('view-progress-btn').addEventListener('click', () => showView('progress-section'));
+    document.getElementById('close-workout-btn').addEventListener('click', () => showView('calendar-container'));
+    document.getElementById('close-progress-btn').addEventListener('click', () => showView('calendar-container'));
     exerciseList.addEventListener('click', (e) => {
-        if (e.target.matches('.timer-buttons button')) {
-            const duration = e.target.dataset.duration;
-            startTimer(parseInt(duration), e.target);
+        const timerButton = e.target.closest('.timer-buttons button');
+        if (timerButton) {
+            const duration = timerButton.dataset.duration;
+            startTimer(parseInt(duration), timerButton);
         }
     });
 
     // ---------- INIZIALIZZAZIONE ----------
+    generateDummyData(); // Genera i dati di esempio se necessario
     renderCalendar();
     updateProgressSection();
-    showView('calendar-container'); // Mostra la vista del calendario all'avvio
+    showView('calendar-container');
 });
