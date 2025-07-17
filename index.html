@@ -3,10 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gym Workout Tracker</title>
+    <title>Gym Tracker</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- VISUALIZZATORE MEDIA -->
+    <div id="media-viewer" class="hidden">
+        <button class="close-viewer">×</button>
+        <button class="nav-arrow prev-arrow">◄</button>
+        <div id="media-content"></div>
+        <button class="nav-arrow next-arrow">►</button>
+    </div>
+
+    <!-- TIMER GLOBALE -->
+    <div id="global-timer" class="hidden">00:00</div>
+
     <div class="container">
         <!-- VISTA CALENDARIO (HOME) -->
         <div id="calendar-container">
@@ -33,7 +44,7 @@
                 <option value="legs">Legs</option>
             </select>
             <div id="exercise-list"></div>
-            <button id="save-workout">Salva e Chiudi</button>
+            <button id="save-workout">Salva e Chiudi Sessione</button>
         </div>
 
         <!-- VISTA PROGRESSIONE -->
@@ -50,8 +61,7 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="workout_plans.js"></script>
     <script src="script.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="workout_plans.js"></script> <!-- NUOVA RIGA -->
-    <script src="script.js"></script>
-</body></html>
+</body>
+</html>
