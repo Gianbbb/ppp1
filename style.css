@@ -9,42 +9,15 @@
     --accent-color: #52a5e2;
     --color-push: #ff8a80; --color-pull: #80d8ff; --color-legs: #b9f6ca; --color-full: #ffd180;
 }
-
 * { margin: 0; padding: 0; box-sizing: border-box; }
-
-body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    line-height: 1.5;
-}
-
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg-color); color: var(--text-color); line-height: 1.5; }
 .container { padding: 15px; max-width: 800px; margin: 0 auto; }
 .hidden { display: none !important; }
 
-/* --- HEADER DELLE VISTE --- */
-.view-header {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
-    position: relative;
-    justify-content: center;
-}
-.view-header h2 {
-    margin: 0;
-    padding: 0;
-    border: none;
-    font-size: 1.2rem;
-}
-.back-btn {
-    position: absolute;
-    left: 0;
-    background: none;
-    border: none;
-    color: var(--accent-color);
-    font-size: 1rem;
-    cursor: pointer;
-}
+/* --- HEADER DELLE VISTE E BOTTONI INDIETRO --- */
+.view-header { display: flex; align-items: center; margin-bottom: 20px; position: relative; justify-content: center; }
+.view-header h2 { margin: 0; padding: 0; border: none; font-size: 1.2rem; }
+.back-btn { position: absolute; left: 0; background: none; border: none; color: var(--accent-color); font-size: 1rem; cursor: pointer; }
 
 /* --- VISTA CALENDARIO --- */
 #calendar-container h1 { font-size: 1.8rem; text-align: center; margin-bottom: 25px; }
@@ -59,7 +32,6 @@ body {
 .day.push::after { display: block; background-color: var(--color-push); }
 .day.pull::after { display: block; background-color: var(--color-pull); }
 .day.legs::after { display: block; background-color: var(--color-legs); }
-.day.full::after { display: block; background-color: var(--color-full); }
 
 /* --- VISTA ALLENAMENTO --- */
 #workout-section, #progress-section { background: var(--bg-color); }
@@ -67,9 +39,8 @@ select, input, textarea { width: 100%; padding: 12px; background-color: var(--pr
 .exercise { background-color: var(--primary-card-bg); border-radius: 10px; padding: 15px; margin-bottom: 15px; }
 .exercise-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
 .exercise-header span { font-weight: 600; font-size: 1.1rem; }
-.progress-btn { background-color: #3f51b5; color: white; border: none; border-radius: 20px; padding: 5px 12px; font-size: 0.8rem; font-weight: 500; cursor: pointer; }
 .set { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; padding: 10px; border: 1px solid transparent; border-radius: 8px; transition: border-color 0.3s; }
-.set.focused { border-color: var(--accent-color); } /* Stile per il focus */
+.set.focused { border-color: var(--accent-color); }
 .set > span { width: 100%; color: var(--hint-color); font-size: 0.9rem; }
 .set input { margin-bottom: 0; flex-grow: 1; }
 .set .last-time { width: 100%; font-size: 0.8rem; color: var(--hint-color); text-align: right; margin-top: 5px; }
@@ -83,21 +54,25 @@ button#save-workout:hover, .main-action-btn:hover { background-color: #4394d1; }
 
 /* --- GRAFICO --- */
 .chart-container { position: relative; height: 60vh; background-color: var(--primary-card-bg); padding: 10px; border-radius: 12px; }
-/* Stile per il link del video */
-.video-link {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    margin-left: 10px;
-    color: var(--hint-color);
-    text-decoration: none;
-}
 
-.video-link:hover {
-    color: var(--accent-color);
-}
+/* --- TIMER GLOBALE DI ALLENAMENTO --- */
+#global-timer { position: fixed; top: 15px; right: 15px; background-color: var(--accent-color); color: white; padding: 8px 12px; border-radius: 8px; font-size: 1rem; font-weight: 600; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
 
-.video-link svg {
-    width: 20px;
-    height: 20px;
-}
+/* --- STILI PER ESERCIZIO COMPLETATO --- */
+.exercise.completed { opacity: 0.5; transition: opacity 0.3s ease; }
+.exercise.completed .sets-container, .exercise.completed .notes { pointer-events: none; }
+.finish-exercise-btn { background-color: #28a745; color: white; border: none; border-radius: 8px; padding: 10px 15px; font-size: 0.9rem; font-weight: 600; cursor: pointer; width: 100%; margin-top: 15px; }
+.finish-exercise-btn:disabled { background-color: var(--border-color); }
+
+/* --- VISUALIZZATORE MEDIA --- */
+#media-viewer { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(0, 0, 0, 0.85); z-index: 2000; display: flex; justify-content: center; align-items: center; }
+#media-content { max-width: 90%; max-height: 80%; display: flex; justify-content: center; align-items: center; }
+#media-content video, #media-content img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px; }
+.close-viewer { position: absolute; top: 15px; right: 20px; background: none; border: none; color: white; font-size: 2.5rem; cursor: pointer; line-height: 1; }
+.nav-arrow { position: absolute; top: 50%; transform: translateY(-50%); background-color: rgba(255, 255, 255, 0.2); border: none; color: white; font-size: 2rem; cursor: pointer; padding: 10px; border-radius: 50%; width: 50px; height: 50px; display: flex; justify-content: center; align-items: center; }
+.nav-arrow:hover { background-color: rgba(255, 255, 255, 0.4); }
+.prev-arrow { left: 15px; }
+.next-arrow { right: 15px; }
+.media-icon { display: inline-flex; align-items: center; justify-content: center; margin-left: 10px; cursor: pointer; color: var(--hint-color); }
+.media-icon:hover { color: var(--accent-color); }
+.media-icon svg { width: 20px; height: 20px; }
