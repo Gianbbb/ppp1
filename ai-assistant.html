@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assistente AI - Gym Tracker</title>
+    <link rel="stylesheet" href="ai-assistant.css">
+</head>
+<body>
+    <div class="chat-app">
+        <header class="chat-header">
+            <div class="title-block">
+                <h1>Assistente Allenamenti AI</h1>
+                <p>Scrivi in linguaggio naturale il tuo allenamento: Gemini lo trasforma in un piano strutturato e ti suggerisce come progredire.</p>
+            </div>
+            <a href="index.html" class="back-link">◄ Torna a Gym Tracker</a>
+        </header>
+
+        <section class="api-key-panel" aria-labelledby="api-key-title">
+            <div class="panel-header">
+                <h2 id="api-key-title">Configura Gemini</h2>
+                <button type="button" id="toggle-api-panel" aria-expanded="true" aria-controls="api-panel-body">Nascondi</button>
+            </div>
+            <div id="api-panel-body" class="panel-body">
+                <p>Inserisci la tua API key di <strong>Google AI Studio</strong>. La chiave viene salvata soltanto nel tuo browser (localStorage) e puoi rimuoverla quando vuoi.</p>
+                <div class="api-key-controls">
+                    <input type="password" id="api-key-input" placeholder="Gemini API Key" autocomplete="off">
+                    <button type="button" id="save-api-key">Salva</button>
+                    <button type="button" id="clear-api-key" class="ghost">Rimuovi</button>
+                    <button type="button" id="toggle-visibility" aria-pressed="false" title="Mostra/Nascondi API key">👁</button>
+                </div>
+                <p class="status-message" id="api-status" role="status" aria-live="polite"></p>
+                <details class="safety-note">
+                    <summary>Come ottenere una chiave</summary>
+                    <ol>
+                        <li>Vai su <a href="https://aistudio.google.com" target="_blank" rel="noopener">Google AI Studio</a>.</li>
+                        <li>Crea una nuova API key e abilita l'accesso al modello Gemini 1.5 Flash.</li>
+                        <li>Copia la chiave e incollala qui sopra.</li>
+                    </ol>
+                </details>
+            </div>
+        </section>
+
+        <main class="chat-window" id="chat-window" aria-live="polite" aria-label="Stanza chat assistente Gemini">
+            <div class="message assistant">
+                <div class="bubble">
+                    👋 Ciao! Raccontami l'allenamento che hai appena fatto (esercizi, serie, carichi, tempi, sensazioni). Ti restituisco un riepilogo ordinato e consigli per la prossima sessione.
+                </div>
+            </div>
+        </main>
+
+        <form id="chat-form" class="chat-form" novalidate>
+            <label for="prompt-input">Racconta il tuo allenamento</label>
+            <div class="input-wrapper">
+                <textarea id="prompt-input" rows="1" placeholder="Esempio: Riscaldamento 10' cyclette, poi panca piana 4x8 a 60kg (ultimo set a cedimento), chest press 3x12 a 35kg, flessioni 3xAMRAP..." required></textarea>
+                <button type="submit" id="send-btn">Invia</button>
+            </div>
+            <p class="hint">Invio per inviare · Shift + Invio per andare a capo.</p>
+        </form>
+    </div>
+
+    <script src="ai-assistant.js"></script>
+</body>
+</html>

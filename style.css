@@ -51,6 +51,9 @@ textarea.notes { height: 60px; margin-top: 15px; }
 /* --- PULSANTI PRINCIPALI --- */
 button#save-workout, .main-action-btn { width: 100%; padding: 15px; font-size: 1.1rem; font-weight: 600; background-color: var(--accent-color); color: white; border: none; border-radius: 10px; cursor: pointer; transition: background-color 0.2s ease; margin-top: 20px; }
 button#save-workout:hover, .main-action-btn:hover { background-color: #4394d1; }
+a.main-action-btn { display: block; text-decoration: none; text-align: center; }
+.secondary-action-btn { background-color: transparent; border: 1px solid var(--accent-color); color: var(--accent-color); }
+.secondary-action-btn:hover { background-color: rgba(82, 165, 226, 0.12); }
 
 /* --- GRAFICO --- */
 .chart-container { position: relative; height: 60vh; background-color: var(--primary-card-bg); padding: 10px; border-radius: 12px; }
